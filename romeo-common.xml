@@ -18,21 +18,6 @@
   <!-- Wheel separation, in meters. -->
   <arg name="wheel_separation" value=".203" />
 
-  <!-- PID control parameters.
-
-    These were determined using the Ziegler-Nichols method.
-
-const float Ku = .15;
-const float Tu = .1142857143;
-
-const float Kp = 0.6*Ku;
-const float Ki = 2*Kp/Tu;
-const float Kd = Kp*Tu/8;
-  -->
-  <arg name="Kp" value="0.09" />
-  <arg name="Ki" value="1.575" />
-  <arg name="Kd" value=".001286" />
-
   <param name="ticks_meter" value="$(arg ticks_per_meter)" />
 
   <node name="joystick" pkg="differential_drive" type="virtual_joystick.py" if="$(arg launch_joystick)">
@@ -52,14 +37,16 @@ const float Kd = Kp*Tu/8;
     <param name="base_width" value="$(arg wheel_separation)" />
   </node>
 
-  <node name="romeo" pkg="rosserial_python" type="serial_node.py" if="$(arg launch_arduino)">
-    <param name="baud" value="57600" type="int" />
-    <param name="port" value="$(arg tty)" type="string" />
-    <param name="control_rate" value="100" type="int" />
-    <param name="vtarget_timeout" value="0.1" type="double" />
-    <param name="Kp" value="$(arg Kp)" type="double" />
-    <param name="Ki" value="$(arg Ki)" type="double" />
-    <param name="Kd" value="$(arg Kd)" type="double" />
+  <node name="astar" pkg="rosserial_python" type="serial_node.py" if="$(arg launch_arduino)">
+    <rosparam>
+      baud: 57600,
+      port: $(arg tty),
+      control_rate: 100,
+      vtarget_timeout: 0.5,
+      k_p: 0.7,
+      k_i: 0.0,
+      k_d: 0.001
+    </rosparam>
   </node>
 
 </launch>
